@@ -48,32 +48,60 @@
 				$h = $thissize[1];
 			}
 			
+			// make the folder if it doesn't exist already
+			if (!is_dir("thumbs")) {
+				mkdir("thumbs",0775);
+			}
+			
 			// produce thumbnail if it does not exist already
 			if (!file_exists($_SERVER['DOCUMENT_ROOT']."/thumbs/$images")) {
 				
 				// load images
 				if ( mime_content_type($images) == "image/jpeg" ) { // jpeg or jpg
 					$original = imagecreatefromjpeg($images);
+					
+					// create base thumbnail, prime it for transparency, copy our original image,
+					// save the thumbnail to disk & garbage collect
+					$thumbnail = imagecreatetruecolor($w,$h);
+					imagealphablending($thumbnail, false);
+					imagesavealpha($thumbnail,true);
+					imagecopyresampled($thumbnail,$original,0,0,0,0,$w,$h,$thissize[0],$thissize[1]);
+					imagejpeg($thumbnail,$_SERVER['DOCUMENT_ROOT']."/thumbs/$images",100);
+					imagedestroy($thumbnail);	
+					
 				}
 				
 				if ( mime_content_type($images) == "image/png" ) { // png
 					$original = imagecreatefrompng($images);
+					
+					// and again
+					$thumbnail = imagecreatetruecolor($w,$h);
+					imagealphablending($thumbnail, false);
+					imagesavealpha($thumbnail,true);
+					imagecopyresampled($thumbnail,$original,0,0,0,0,$w,$h,$thissize[0],$thissize[1]);
+					imagepng($thumbnail,$_SERVER['DOCUMENT_ROOT']."/thumbs/$images");
+					imagedestroy($thumbnail);	
 				}
 				
 				if ( mime_content_type($images) == "image/gif" ) { // gif
 					$original = imagecreatefromgif($images);
+							
+					// aaand again
+					$thumbnail = imagecreatetruecolor($w,$h);
+					
+					// gifs are weird and require special transparency handling
+					imagecolortransparent($thumbnail, 0);
+					$t = imagecolorallocatealpha($thumbnail,0,0,0,0);
+					imagesavealpha($thumbnail,true);
+					imagefill($thumbnail,0,0,$t);
+					//imagefilledrectangle($thumbnail,0,0,$w,$h,$t);
+
+					
+					imagecopyresampled($thumbnail,$original,0,0,0,0,$w,$h,$thissize[0],$thissize[1]);
+					imagegif($thumbnail,$_SERVER['DOCUMENT_ROOT']."/thumbs/$images");
+					imagedestroy($thumbnail);	
 				}
-				
-				// create base thumbnail, prime it for transparency, copy our original image,
-				// save the thumbnail to disk & garbage collect
-				$thumbnail = imagecreatetruecolor($w,$h);
-				imagealphablending($thumbnail, false);
-				imagesavealpha($thumbnail,true);
-				imagecopyresampled($thumbnail,$original,0,0,0,0,$w,$h,$thissize[0],$thissize[1]);
-				imagepng($thumbnail,$_SERVER['DOCUMENT_ROOT']."/thumbs/$images");
-				imagedestroy($thumbnail);	
-				
-			}
+			} // end check for thumbnails existing
 
 			// display as td with link to full size
 			echo "<td>
