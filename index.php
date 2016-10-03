@@ -94,8 +94,6 @@
 					$t = imagecolorallocatealpha($thumbnail,0,0,0,0);
 					imagesavealpha($thumbnail,true);
 					imagefill($thumbnail,0,0,$t);
-					//imagefilledrectangle($thumbnail,0,0,$w,$h,$t);
-
 					
 					imagecopyresampled($thumbnail,$original,0,0,0,0,$w,$h,$thissize[0],$thissize[1]);
 					imagegif($thumbnail,$_SERVER['DOCUMENT_ROOT']."/thumbs/$images");
