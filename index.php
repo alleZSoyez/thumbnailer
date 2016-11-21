@@ -2,6 +2,10 @@
 	// get files
 	$files = scandir(".");
 	
+	// download link here
+	echo "<a href=\"./download.php\">Download All Images</a><br>
+	<span style=\"font-size:70%;\">If there are many images, it could take a little bit...</span>";
+	
 	// start table & first row
 	echo "<table style=\"width:100%; margin:auto; text-align:center;\">
 			<tr>";
@@ -54,7 +58,7 @@
 			}
 			
 			// produce thumbnail if it does not exist already
-			if (!file_exists($_SERVER['DOCUMENT_ROOT']."/thumbs/$images")) {
+			if (!file_exists("./thumbs/$images")) {
 				
 				// load images
 				if ( mime_content_type($images) == "image/jpeg" ) { // jpeg or jpg
@@ -79,7 +83,7 @@
 					imagealphablending($thumbnail, false);
 					imagesavealpha($thumbnail,true);
 					imagecopyresampled($thumbnail,$original,0,0,0,0,$w,$h,$thissize[0],$thissize[1]);
-					imagepng($thumbnail,$_SERVER['DOCUMENT_ROOT']."/thumbs/$images");
+					imagepng($thumbnail,"./thumbs/$images");
 					imagedestroy($thumbnail);	
 				}
 				
@@ -96,7 +100,7 @@
 					imagefill($thumbnail,0,0,$t);
 					
 					imagecopyresampled($thumbnail,$original,0,0,0,0,$w,$h,$thissize[0],$thissize[1]);
-					imagegif($thumbnail,$_SERVER['DOCUMENT_ROOT']."/thumbs/$images");
+					imagegif($thumbnail,"./thumbs/$images");
 					imagedestroy($thumbnail);	
 				}
 			} // end check for thumbnails existing
