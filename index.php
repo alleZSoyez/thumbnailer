@@ -53,8 +53,8 @@
 			}
 			
 			// make the folder if it doesn't exist already
-			if (!is_dir("thumbs")) {
-				mkdir("thumbs",0775);
+			if (!is_dir("./thumbs")) {
+				mkdir("./thumbs",0775);
 			}
 			
 			// produce thumbnail if it does not exist already
@@ -70,7 +70,7 @@
 					imagealphablending($thumbnail, false);
 					imagesavealpha($thumbnail,true);
 					imagecopyresampled($thumbnail,$original,0,0,0,0,$w,$h,$thissize[0],$thissize[1]);
-					imagejpeg($thumbnail,$_SERVER['DOCUMENT_ROOT']."/thumbs/$images",100);
+					imagejpeg($thumbnail,"./thumbs/$images",100);
 					imagedestroy($thumbnail);	
 					
 				}
@@ -108,7 +108,7 @@
 			// display as td with link to full size
 			echo "<td>
 					<a href=\"$images\" target=\"_blank\">
-						<img src=\"/thumbs/$images\">
+						<img src=\"./thumbs/$images\">
 					</a>
 				</td>";
 		}
